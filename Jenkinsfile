@@ -23,7 +23,7 @@ pipeline {
                     if (isUnix()) {
                         sh 'npm ci --no-audit --no-fund'
                     } else {
-                        bat 'npm ci --no-audit --no-fund'
+                        bat 'cmd /c "npm ci --no-audit --no-fund"'
                     }
                 }
             }
@@ -36,7 +36,7 @@ pipeline {
                     if (isUnix()) {
                         sh 'npm run build'
                     } else {
-                        bat 'npm run build'
+                        bat 'cmd /c "npm run build"'
                     }
                 }
             }
@@ -49,7 +49,7 @@ pipeline {
                     if (isUnix()) {
                         sh "docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} -t ${IMAGE_NAME}:latest ."
                     } else {
-                        bat "docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} -t ${IMAGE_NAME}:latest ."
+                        bat 'cmd /c "docker build -t %IMAGE_NAME%:%BUILD_NUMBER% -t %IMAGE_NAME%:latest ."'
                     }
                 }
             }
@@ -67,9 +67,9 @@ pipeline {
                         """
                     } else {
                         bat """
-                            docker stop ${CONTAINER_NAME} || exit 0
-                            docker rm ${CONTAINER_NAME} || exit 0
-                            docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:80 ${IMAGE_NAME}:latest
+                            cmd /c "docker stop %CONTAINER_NAME% || exit 0"
+                            cmd /c "docker rm %CONTAINER_NAME% || exit 0"
+                            cmd /c "docker run -d --name %CONTAINER_NAME% -p %HOST_PORT%:80 %IMAGE_NAME%:latest || exit 0"
                         """
                     }
                 }
